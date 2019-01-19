@@ -1,0 +1,13 @@
+.recentf*
+.smex-items*
+ido.last*
+init.el~
+backups/*
+cider-history
+network-security.data
+projectile-bookmarks.eld
+url/*
+ac-comphist.dat
+auto-save-list/*
+elpa/*
+goflymake/*
