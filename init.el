@@ -9,6 +9,7 @@
         ("elpa" . 3)
         ("melpa") .10))
 
+(setq x-select-enable-clipboard t)
 ;; Load and activate emacs packages. Do this first so that the
 ;; packages are loaded before you start trying to modify them.
 ;; This also sets the load path.
@@ -166,7 +167,8 @@
 
 ;; ;; magit keybindings
 (global-set-key (kbd "C-x g") 'magit-status)
-
+(setq smerge-command-prefix "\C-cv")
+;;(add-hook 'smerge-mode-hook (lambda () (setq smerge-command-prefix "^Cv")))
 ;; ;; UI helpers
 (add-hook 'prog-mode-hook 'idle-highlight-mode)
 (add-hook 'prog-mode-hook 'electric-pair-mode)
@@ -180,6 +182,9 @@
 (add-hook 'go-mode-hook (lambda () (local-set-key (kbd "M-.") 'godef-jump)))
 (add-hook 'go-mode-hook (lambda () (local-set-key (kbd "M-,") 'pop-tag-mark)))
 (add-hook 'go-mode-hook (lambda () (local-set-key (kbd "M-m") 'go-rename)))
+(let ((govet (flycheck-checker-get 'go-vet 'command)))
+  (when (equal (cadr govet) "tool")
+    (setf (cdr govet) (cddr govet))))
 
 ;; js editing
 (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
@@ -209,6 +214,7 @@
 (add-hook 'web-mode-hook 'prettier-js-mode)
 (add-hook 'css-mode-hook 'prettier-js-mode)
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
+(add-hook 'tide-mode-hook (lambda () (local-set-key (kbd "M-m") 'tide-rename-symbol)))
 (add-hook 'web-mode-hook
           (lambda ()
             (when (string-equal "tsx" (file-name-extension buffer-file-name))
@@ -217,7 +223,11 @@
           (lambda ()
             (when (string-equal "ts" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
-;; enable typescript-tslint checker
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "js" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+; enable typescript-tslint checker
 (flycheck-add-mode 'typescript-tslint 'web-mode)
 
 ;; imenu
@@ -230,7 +240,7 @@
  '(coffee-tab-width 2)
  '(package-selected-packages
    (quote
-    (prettier-js web-mode tide tagedit smex rainbow-delimiters projectile paredit magit ido-completing-read+ idle-highlight-mode go-guru go-eldoc company-go clojure-mode-extra-font-locking cider ag))))
+    (js2-mode lua-mode prettier-js web-mode tide tagedit smex rainbow-delimiters projectile paredit magit ido-completing-read+ idle-highlight-mode go-guru go-eldoc company-go clojure-mode-extra-font-locking cider ag))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
