@@ -20,14 +20,6 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;; Define the following variables to remove the compile-log warnings
-;; when defining ido-ubiquitous
-;; (defvar ido-cur-item nil)
-;; (defvar ido-default-item nil)
-;; (defvar ido-cur-list nil)
-;; (defvar predicate nil)
-;; (defvar inherit-input-method nil)
-
 ;; The packages you want installed. You can also install these
 ;; manually with M-x package-install
 ;; Add in your own as you wish:
@@ -88,14 +80,17 @@
      go-guru
 
      ;; for js integrations
-;;     js2-mode
-;;     js2-refactor
-;;     xref-js2
      prettier-js
-;;     rjsx-mode
      tide
      web-mode
      queue
+
+     ;; java editing
+     lsp-java
+
+     ;; python editing
+     elpy
+     py-autopep8
      ))
 
 (dolist (p my-packages)
@@ -192,14 +187,6 @@
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . web-mode))
-;;(add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
-;;(add-hook 'js2-mode-hook 'prettier-js-mode)
-
-;;(add-hook 'js2-mode-hook #'js2-refactor-mode)
-;;(js2r-add-keybindings-with-prefix "C-c C-r")
-;;(define-key js2-mode-map (kbd "M-m") #'js2r-rename-var)
-;;(define-key js-mode-map (kbd "M-.") #'js2-jump-to-definition)
-;;(add-hook 'js2-mode-hook (lambda ()                           (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
 
 ;; ;; typescript
 (defun setup-tide-mode ()
@@ -230,7 +217,16 @@
 ; enable typescript-tslint checker
 (flycheck-add-mode 'typescript-tslint 'web-mode)
 
-;; imenu
+;; python
+(elpy-enable)
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; java editing
+(require 'lsp-java)
+(add-hook 'java-mode-hook #'lsp)
+
 (global-set-key (kbd "C-r") 'imenu)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -240,7 +236,7 @@
  '(coffee-tab-width 2)
  '(package-selected-packages
    (quote
-    (js2-mode lua-mode prettier-js web-mode tide tagedit smex rainbow-delimiters projectile paredit magit ido-completing-read+ idle-highlight-mode go-guru go-eldoc company-go clojure-mode-extra-font-locking cider ag))))
+    (elpy yasnippet-lean treemacs lsp-java yaml-mode php-mode js2-mode lua-mode prettier-js web-mode tide tagedit smex rainbow-delimiters projectile paredit magit ido-completing-read+ idle-highlight-mode go-guru go-eldoc company-go clojure-mode-extra-font-locking cider ag))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
